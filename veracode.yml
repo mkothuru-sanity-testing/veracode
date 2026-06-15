@@ -1,34 +1,23 @@
-default:
-  runs_on: ubuntu-latest
-actions:
-  veracode_static_scan:
-    build:
-      runs_on: ubuntu-latest
 veracode_static_scan:
   push:
-    trigger: false 
-    #This is only turned on if you want to do a pipeline scan on push
+    trigger: false
     # Please only specify either branches_to_run or branches_to_exclude
     # Entering both will only execute branches_to_run
     # Leaving them both blank means this will never run
-    # static scan will fail if build is not successful in repo
     branches_to_run:
-    # Make sure you keep this next line commented out if you just want to run the policy scan and not the policy and pipelinescan
-    #  - '*'
     branches_to_exclude:
+      - '*'
   pull_request:
-    trigger: false 
-    #This is only turned on if you want to do a pipeline scan on pull
+    trigger: false
     action:
       - opened
       - synchronize
     target_branch:
-      - default_branch 
+      - default_branch
   # If the analysis_on_platform is set to true,
-  # Veracode will save your last scan result, on the default branch, as an application profile with the same name as your scanned repository on the Veracode platform. 
+  # Veracode will save your last scan result, on the default branch, as an application profile with the same name as your scanned repository on the Veracode platform.
   # If the analysis_on_platform is set to false, scan results will not be saved to the Veracode platform.
-  analysis_on_platform: true #line 12 or line 21 should be true not both.  Otherwise it will run both a pipeline scan and policy scan on PR.  In order to run Policy Scan you must use PR.  Policy Scan will not be run on a push directly to main.
-  #NOTE: Please see the comment on the above line.  If 21 is turned on it will do a policy scan on Pull Request.  Don't turn them both on or it will do a pipeline scan and a policy scan.
+  analysis_on_platform: true
   # If break_build_policy_findings is set to true, the build will break when findings violate the policy.
   break_build_policy_findings: true
   # If break_build_invalid_policy is set to true, the build will break when the policy name is invalid.
@@ -37,7 +26,7 @@ veracode_static_scan:
   break_build_on_error: false
   error_message: "Veracode static scan faced a problem. Please contact your Veracode administrator for more information."
   # Default policy to be used if a policy isn't already assigned to the application profile.
-  policy: 'Veracode Recommended Medium + SCA1234'
+  policy: 'Veracode Recommended Medium + SCA'
   # If the create_code_scanning_alert is set to true, GitHub security code scanning vulnerability alerts will be created for static findings.
   create_code_scanning_alert: false
   # If the create_issue is set to true, GitHub Issues will be created for static findings.
@@ -45,10 +34,10 @@ veracode_static_scan:
   # If the trigger is set to true, a scan is triggered when you create an issue containing the commands value or add a comment containing the commands value to an issue.
   # Syntax to be used - COMMANDS_VALUE [branch: BRANCH_NAME]
   issues:
-    trigger: false
+    trigger: true
     commands:
       - "Veracode Static Scan"
-
+      - "Veracode All Scans"
 veracode_sca_scan:
   push:
     trigger: false
@@ -65,12 +54,7 @@ veracode_sca_scan:
       - synchronize
     target_branch:
       - default_branch
-  fix_for_sca:
-    # Fix for SCA configuration
-    pull_request:
-      # Setting trigger to true will enable Fix for SCA on pull requests. Fix for SCA requires SCA scans to be executed on these pull requests.
-      trigger: true  
-  # If the break_build_on_error is set to true, the build will break if the scan failed to complete or with an error, no libraries were found, 
+  # If the break_build_on_error is set to true, the build will break if the scan failed to complete or with an error, no libraries were found,
   # or no build system was found and the error_message will be displayed.
   break_build_on_error: true
   break_build_policy_findings: true
@@ -78,10 +62,10 @@ veracode_sca_scan:
   # If the trigger is set to true, a scan is triggered when you create an issue containing the commands value or add a comment containing the commands value to an issue.
   # Syntax to be used - COMMANDS_VALUE [branch: BRANCH_NAME]
   issues:
-    trigger: false
+    trigger: true
     commands:
       - "Veracode SCA Scan"
-
+      - "Veracode All Scans"
 veracode_iac_secrets_scan:
   push:
     trigger: false
@@ -92,7 +76,7 @@ veracode_iac_secrets_scan:
       - '*'
     branches_to_exclude:
   pull_request:
-    trigger: true
+    trigger: false
     action:
       - opened
       - synchronize
@@ -100,13 +84,13 @@ veracode_iac_secrets_scan:
       - default_branch
   # If break_build_policy_findings is set to true, the build will break when findings violate the policy.
   break_build_policy_findings: true
-  # If the break_build_on_error is set to true, the build will break if the scan failed to complete or with an error, no libraries were found, 
+  # If the break_build_on_error is set to true, the build will break if the scan failed to complete or with an error, no libraries were found,
   # or no build system was found and the error_message will be displayed.
   break_build_on_error: true
   error_message: "Veracode IAC secrets scan faced a problem. Please contact your Veracode administrator for more information."
   # If the trigger is set to true, a scan is triggered when you create an issue containing the commands value or add a comment containing the commands value to an issue.
   # Syntax to be used - COMMANDS_VALUE [branch: BRANCH_NAME]
   issues:
-    trigger: false
+    trigger: true
     commands:
       - "Veracode IAC Scan"
